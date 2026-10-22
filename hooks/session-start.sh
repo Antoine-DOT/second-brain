@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SessionStart: pull the vault and give Claude its context (deadlines, recent log, inbox, last "Reprise").
+# SessionStart: pull the vault and give Claude its context (deadlines, recent log, inbox, last Resume line).
 # Optional: SECOND_BRAIN_HEALTH_HOST=<ssh host> reads a sync health file (status=OK|ALERT, "- problem" lines)
 # written by the server that bridges the phone (see README).
 V="${SECOND_BRAIN_VAULT:-$HOME/second-brain}"
@@ -34,10 +34,10 @@ $probs" && msg="⚠️ Vault sync: $(tr '\n' ' ' <<<"$probs")"
 fi
 due=$(sed -n '/^## 📅 Upcoming deadlines/,/^## /p' "$V/Home.md" 2>/dev/null | grep "^- " | head -6)
 # After a /clear: hand back the latest Resume line so the new conversation does not start blank.
-reprise=""
+resume=""
 if [ "$src" = clear ]; then
   f=$(ls -t "$V"/raw/sessions/*.md 2>/dev/null | head -20 | while read -r x; do grep -qE "^(- )?(\*\*)?Resume" "$x" && { echo "$x"; break; }; done)
-  [ -n "$f" ] && reprise="
+  [ -n "$f" ] && resume="
 🔁 Resuming after a session switch ($f):
 $(grep -m1 -E "^(- )?(\*\*)?Resume" "$f")
 Re-read this report and the project page, restore the working environment, sum up where things stand in 3 lines, then wait for the user."
@@ -45,6 +45,6 @@ fi
 ctx="Vault ($V, $status): durable memory for projects, infrastructure, ideas and the journal. Before working on a project or a machine, read wiki/index.md, then wiki/projects/<project>.md or wiki/entities/<host>.md. After a deployment, an infrastructure change or a validation, write raw/sessions/… and update the wiki following $V/CLAUDE.md, then commit + push. Capture as you go: any durable information (fact, decision, deadline, thought) goes to the right page in the same turn, with \"📝 noted in <page>\", then python3 $V/scripts/dashboard.py. Dashboard: $V/Home.md. Upcoming deadlines:
 $due
 Latest log entries:
-$log$health$inbox$reprise"
+$log$health$inbox$resume"
 if [ -n "$msg" ]; then jq -n --arg c "$ctx" --arg m "$msg" '{systemMessage:$m,hookSpecificOutput:{hookEventName:"SessionStart",additionalContext:$c}}'
 else jq -n --arg c "$ctx" '{hookSpecificOutput:{hookEventName:"SessionStart",additionalContext:$c}}'; fi
