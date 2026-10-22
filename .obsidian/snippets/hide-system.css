@@ -1,0 +1,13 @@
+/* Hides what is there for the agents, not for you, from the file explorer.
+   Files stay in place: links, graph, search and agents are unaffected.
+   To show them again: Settings → Appearance → CSS snippets → turn off "hide-system". */
+.nav-folder:has(> .nav-folder-title[data-path="raw"]),
+.nav-folder:has(> .nav-folder-title[data-path="scripts"]),
+.nav-folder:has(> .nav-folder-title[data-path="hooks"]),
+.nav-file:has(> .nav-file-title[data-path="POLICY.md"]),
+.nav-file:has(> .nav-file-title[data-path="CLAUDE.md"]),
+.nav-file:has(> .nav-file-title[data-path="AGENTS.md"]),
+.nav-file:has(> .nav-file-title[data-path="README.md"]),
+.nav-file:has(> .nav-file-title[data-path="LICENSE"]) {
+  display: none;
+}

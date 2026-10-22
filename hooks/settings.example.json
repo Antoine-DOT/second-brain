@@ -1,0 +1,19 @@
+{
+  "env": {
+    "SECOND_BRAIN_VAULT": "/Users/you/second-brain"
+  },
+  "hooks": {
+    "SessionStart": [
+      { "hooks": [ { "type": "command", "command": "~/.claude/hooks/session-start.sh", "statusMessage": "Syncing the vault" } ] }
+    ],
+    "Stop": [
+      { "hooks": [
+        { "type": "command", "command": "~/.claude/hooks/stop-check.sh" },
+        { "type": "command", "command": "~/.claude/hooks/delegation-reminder.sh" }
+      ] }
+    ],
+    "UserPromptSubmit": [
+      { "hooks": [ { "type": "command", "command": "~/.claude/hooks/context-size-check.sh" } ] }
+    ]
+  }
+}

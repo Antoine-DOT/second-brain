@@ -1,0 +1,7 @@
+.DS_Store
+.trash/
+.obsidian/workspace*.json
+.obsidian/cache
+
+# Sensitive notes: only on the main machine, never pushed
+private/
